@@ -10,14 +10,18 @@
 	rs = reset --soft HEAD~1
 	s = status
 	sw = switch
+
+[commit]
+{{- if .git_gpgkey }}
+	gpgsign = true
+{{- end }}
+
+[help]
+	autocorrect = 20
+
 [user]
 	name = {{ .git_name }}
 	email = {{ .git_email }}
 {{- if .git_gpgkey }}
 	signingkey = {{ .git_gpgkey }}
-{{- end }}
-
-{{- if .git_gpgkey }}
-[commit]
-	gpgsign = true
 {{- end }}
