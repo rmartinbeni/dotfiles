@@ -1,0 +1,56 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "${SETUP_COMMIT_GPG}" != true ]; then
+  echo "❌ GPG setup is disabled. Skipping."
+  exit 1
+fi
+
+NAME="{{ .git_name }}"
+EMAIL="{{ .git_email }}"
+EXPIRE_DATE="0"
+
+if ! command -v gpg >/dev/null 2>&1; then
+  echo "❌ GPG not installed. Aborting." >&2
+  exit 1
+fi
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+cat >"$tmp" <<EOF
+%no-protection
+Key-Type: eddsa
+Key-Curve: ed25519
+Subkey-Type: ecdh
+Subkey-Curve: cv25519
+Name-Real: $NAME
+Name-Email: $EMAIL
+Expire-Date: $EXPIRE_DATE
+%commit
+EOF
+
+echo "🔐 Generating GPG ed25519 key..."
+gpg --batch --generate-key "$tmp"
+
+# Prefer the fingerprint (works with git as signing key)
+KEY_ID=$(gpg --list-secret-keys --with-colons "$EMAIL" | awk -F: '/^sec/{print $5; exit}')
+
+if [[ -z "$KEY_ID" ]]; then
+    echo "❌ Could not obtain key ID." >&2
+  exit 1
+fi
+
+echo "✅ Key generated with ID: $KEY_ID"
+
+CHEZMOI_FILE="$HOME/.config/chezmoi/chezmoi.toml"
+
+echo -e "\n[gpg]\n  key = \"$KEY_ID\"" >> "$CHEZMOI_FILE"
+echo "➕ Added [gpg] section with key in $CHEZMOI_FILE."
+
+echo "⚙️ Configuring Git..."
+git config --global user.signingkey "$KEY_ID"
+git config --global commit.gpgsign true
+
+echo "📋 Public key (copy and paste this into GitHub/GitLab):"
+gpg --armor --export "$KEY_ID"
