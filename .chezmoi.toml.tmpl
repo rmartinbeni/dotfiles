@@ -1,6 +1,7 @@
 [data]
   git_name = "{{ promptStringOnce . "git_name" "Git user name" "rmartinbeni" }}"
   git_email = "{{ promptStringOnce . "git_email" "Git email address" "32068910+rmartinbeni@users.noreply.github.com"}}"
+  git_gpgkey = ""
 
 [scriptEnv]
   SETUP_COMMIT_GPG = "{{ promptBoolOnce . "SETUP_COMMIT_GPG" "Enable commit GPG signing (Y/n)" true }}"
