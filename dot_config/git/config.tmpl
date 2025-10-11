@@ -13,3 +13,11 @@
 [user]
 	name = {{ .git_name }}
 	email = {{ .git_email }}
+{{- if .git_gpgkey }}
+	signingkey = {{ .git_gpgkey }}
+{{- end }}
+
+{{- if .git_gpgkey }}
+[commit]
+	gpgsign = true
+{{- end }}
