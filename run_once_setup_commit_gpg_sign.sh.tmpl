@@ -10,14 +10,12 @@ NAME="{{ .git_name }}"
 EMAIL="{{ .git_email }}"
 EXPIRE_DATE="0"
 
-if ! command -v gpg >/dev/null 2>&1; then
-  echo "❌ GPG not installed. Aborting." >&2
-  exit 0
-fi
+command -v gpg >/dev/null 2>&1 || { echo "❌ GPG not installed. Aborting." >&2; exit 1; }
 
-if gpg --list-secret-keys "$EMAIL" >/dev/null 2>&1; then
+KEY_ID=$(gpg --list-secret-keys --with-colons "$EMAIL" 2>/dev/null | awk -F: '/^fpr/{print $10; exit}')
+
+if [[ -n "$KEY_ID" ]]; then
   echo "⚠️ A GPG key already exists for $EMAIL. Skipping key generation."
-  KEY_ID=$(gpg --list-secret-keys --with-colons "$EMAIL" | awk -F: '/^fpr/{print $10; exit}')
 else
   tmp=$(mktemp)
   trap 'rm -f "$tmp"' EXIT
@@ -36,37 +34,28 @@ EOF
 
   echo "🔐 Generating GPG ed25519 key..."
   gpg --batch --generate-key "$tmp"
-
-  # Prefer the fingerprint (works with git as signing key)
   KEY_ID=$(gpg --list-secret-keys --with-colons "$EMAIL" | awk -F: '/^fpr/{print $10; exit}')
-
-  if [[ -z "$KEY_ID" ]]; then
-    echo "❌ Could not obtain key ID." >&2
-    exit 1
-  fi
-
+  [[ -z "$KEY_ID" ]] && { echo "❌ Could not obtain key ID." >&2; exit 1; }
   echo "✅ Key generated with ID: $KEY_ID"
 fi
 
-existing=$(git config --global --get user.signingkey || true)
-if [[ "$existing" == "$KEY_ID" ]]; then
-  echo "⚠️ GPG key is already configured in Git. Skipping Git configuration."
-else
+if [[ "$(git config --global --get user.signingkey || true)" != "$KEY_ID" ]]; then
   echo "⚙️ Configuring Git..."
   git config --global user.signingkey "$KEY_ID"
   git config --global commit.gpgsign true
   echo "✅ Git configured with key ID: $KEY_ID"
+else
+  echo "⚠️ GPG key is already configured in Git. Skipping Git configuration."
 fi
 
 CHEZMOI_FILE="$HOME/.config/chezmoi/chezmoi.toml"
-
-if grep -q "key = \"$KEY_ID\"" "$CHEZMOI_FILE"; then
-  echo "⚠️ GPG key is already present in $CHEZMOI_FILE. Skipping addition."
-else
+if ! grep -q "key = \"$KEY_ID\"" "$CHEZMOI_FILE"; then
   echo -e "\n[gpg]\n  key = \"$KEY_ID\"" >> "$CHEZMOI_FILE"
   echo "➕ Added [gpg] section with key in $CHEZMOI_FILE."
   sed -i -E "s|^\s*git_gpgkey\s*=.*$|  git_gpgkey = \"$KEY_ID\"|" "$CHEZMOI_FILE"
   echo "➕ Inserted git_gpgkey in existing [data] section of $CHEZMOI_FILE"
+else
+  echo "⚠️ GPG key is already present in $CHEZMOI_FILE. Skipping addition."
 fi
 
 echo "📋 Public key (copy and paste this into GitHub/GitLab):"
