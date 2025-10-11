@@ -3,4 +3,4 @@
   git_email = "{{ promptStringOnce . "git_email" "Git email address" "32068910+rmartinbeni@users.noreply.github.com"}}"
 
 [scriptEnv]
-  SETUP_COMMIT_GPG = {{ promptBoolOnce . "SETUP_COMMIT_GPG" "Enable commit GPG signing (Y/n)" true }}
+  SETUP_COMMIT_GPG = "{{ promptBoolOnce . "SETUP_COMMIT_GPG" "Enable commit GPG signing (Y/n)" true }}"
