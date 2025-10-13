@@ -1,0 +1,60 @@
+#############################
+# 🌐 Operating System
+#############################
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# Linux/WSL temporary files
+*~
+
+# macOS system files
+.DS_Store
+
+# Backup and temp files
+*.bak
+*.tmp
+
+#############################
+# 🧠 Editors & Shells
+#############################
+
+# JetBrains IDEs
+.idea/
+
+# VSCode / Cursor
+.vscode/
+
+# Vim / Neovim
+*.sw?
+*.un~
+*.vimbackup
+
+#############################
+# 🧪 JavaScript / TypeScript
+#############################
+
+# Tooling cache
+*.tsbuildinfo
+
+#############################
+# 🐍 Python
+#############################
+
+# Caches and testing
+__pycache__/
+.pytest_cache/
+.coverage
+coverage.*
+.mypy_cache/
+
+# pyenv
+.python-version
+
+#############################
+# 🧼 Misc personal files
+#############################
+
+*.log
+*.log.*
