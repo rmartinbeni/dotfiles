@@ -5,7 +5,6 @@
 	devel = switch develop
 	cm = commit
 	master = switch master
-	prune = fetch --prune
 	p = pull
 	rs = reset --soft HEAD~1
 	s = status
@@ -41,6 +40,10 @@
 {{- if .git_gpgkey }}
 	gpgsign = true
 {{- end }}
+
+[fetch]
+	prune = true
+	pruneTags = true
 
 [help]
 	autocorrect = 20
