@@ -1,0 +1,19 @@
+# Completions
+mattmc3/ez-compinit
+zsh-users/zsh-completions kind:fpath path:src
+
+# Keybindings
+belak/zsh-utils path:editor
+
+# Prompt
+romkatv/powerlevel10k
+
+# History
+belak/zsh-utils path:history
+
+# Utilities
+belak/zsh-utils path:utility
+
+# Highlight and Suggestions
+zdharma-continuum/fast-syntax-highlighting
+zsh-users/zsh-autosuggestions
