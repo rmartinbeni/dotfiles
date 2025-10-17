@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+SETUP_COMMIT_GPG=$(echo "$SETUP_COMMIT_GPG" | tr '[:upper:]' '[:lower:]')
 if [[ "${SETUP_COMMIT_GPG,,}" != "true" ]]; then
   echo "❌ GPG setup is disabled. Skipping."
   exit 0
