@@ -1,18 +1,22 @@
 theme = Espresso
 font-size = 20
 font-family = FiraCode Nerd Font Mono
+font-thicken = true
 
 # --- Window Appearance ---
 window-padding-x = 10
 window-padding-y = 10
 window-theme = ghostty
-macos-titlebar-style = transparent
+macos-titlebar-style = tabs
 
 # --- Transparency & Blur ---
 background-opacity = 0.85
-background-blur-radius = 20
+background-blur = macos-glass-regular
 
 # --- Cursor & Mouse Tweaks ---
 mouse-hide-while-typing = true
 cursor-style = block
 cursor-style-blink = true
+
+# --- macOS Specific ---
+macos-option-as-alt = true
