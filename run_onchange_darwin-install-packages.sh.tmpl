@@ -1,0 +1,46 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "🍏 Installing macOS packages..."
+
+# Packages to install
+PACKAGES=(
+  fzf
+  nano
+  docker
+  ripgrep
+  bat
+  eza
+  zoxide
+  jq
+)
+
+# Casks
+CASKS=(
+  ghostty
+  visual-studio-code
+)
+
+brew update
+
+for pkg in "${PACKAGES[@]}"; do
+  if ! brew list "$pkg" &>/dev/null; then
+    echo "Installing $pkg..."
+    brew install "$pkg"
+  else
+    echo "✅ $pkg is already installed."
+  fi
+done
+
+for cask in "${CASKS[@]}"; do
+  if ! brew list --cask "$cask" &>/dev/null; then
+    echo "Installing $cask..."
+    brew install --cask "$cask"
+  else
+    echo "✅ $cask is already installed."
+  fi
+done
+
+echo "✅ macOS packages installed!"
+{{- end -}}

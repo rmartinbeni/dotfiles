@@ -1,0 +1,100 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "🚀 Initializing an Agentic Frontend Project..."
+
+if [ ! -f "package.json" ]; then
+  echo "📦 No package.json found. Initializing npm project..."
+  npm init -y
+fi
+
+echo "📦 Installing development dependencies..."
+npm install -D \
+  eslint \
+  prettier \
+  eslint-config-prettier \
+  eslint-plugin-prettier \
+  husky \
+  lint-staged \
+  typescript \
+  @typescript-eslint/parser \
+  @typescript-eslint/eslint-plugin
+
+echo "⚙️ Setting up Prettier..."
+cat << 'EOF' > .prettierrc
+{
+  "semi": true,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2
+}
+EOF
+
+echo "⚙️ Setting up ESLint (Strict)..."
+cat << 'EOF' > .eslintrc.js
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'prettier'
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json']
+  },
+  plugins: [
+    '@typescript-eslint',
+    'prettier'
+  ],
+  rules: {
+    'prettier/prettier': 'error',
+    'no-console': 'warn',
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'warn'
+  }
+}
+EOF
+
+echo "⚙️ Setting up Husky and lint-staged..."
+npx husky init
+echo "npx lint-staged" > .husky/pre-commit
+
+# Update package.json scripts and lint-staged config
+npm pkg set scripts.lint="eslint ."
+npm pkg set scripts.format="prettier --write ."
+npm pkg set lint-staged."*.{js,ts,jsx,tsx}"="eslint --fix"
+npm pkg set lint-staged."*.{json,md}"="prettier --write"
+
+# Create a basic tsconfig.json if not exists
+if [ ! -f "tsconfig.json" ]; then
+  echo "⚙️ Setting up strict tsconfig.json..."
+  cat << 'EOF' > tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+EOF
+fi
+
+echo "✅ Agentic Frontend environment is fully configured!"
+echo "✨ Run 'npm run lint' or 'npm run format' to verify."
