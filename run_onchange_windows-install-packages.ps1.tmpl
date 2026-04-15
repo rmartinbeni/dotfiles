@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "windows" -}}
 $ErrorActionPreference = "Stop"
 
 Write-Host "🪟 Installing Windows packages via winget..."
@@ -20,3 +21,4 @@ foreach ($pkg in $Packages) {
 }
 
 Write-Host "✅ Windows packages installed!"
+{{- end -}}
