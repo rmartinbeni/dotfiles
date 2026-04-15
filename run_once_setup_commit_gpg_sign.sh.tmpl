@@ -20,15 +20,13 @@ if [[ -n "$KEY_ID" ]]; then
 else
   # Prompt for passphrase
   while true; do
-    echo -n "Enter passphrase for new GPG key: "
-    read -rs PASSPHRASE
+    IFS= read -rsp "Enter passphrase for new GPG key: " PASSPHRASE
     echo
     if [[ -z "$PASSPHRASE" ]]; then
       echo "❌ Passphrase cannot be empty. Please try again."
       continue
     fi
-    echo -n "Confirm passphrase: "
-    read -rs PASSPHRASE_CONFIRM
+    IFS= read -rsp "Confirm passphrase: " PASSPHRASE_CONFIRM
     echo
     if [[ "$PASSPHRASE" != "$PASSPHRASE_CONFIRM" ]]; then
       echo "❌ Passphrases do not match. Please try again."
