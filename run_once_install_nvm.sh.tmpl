@@ -1,0 +1,15 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+set -euo pipefail
+
+# This script ensures NVM is installed before continuing.
+export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
+
+if [ ! -d "$NVM_DIR" ]; then
+  echo "📦 Installing NVM..."
+  mkdir -p "$NVM_DIR"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+else
+  echo "✅ NVM is already installed at $NVM_DIR"
+fi
+{{- end -}}

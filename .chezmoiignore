@@ -1,1 +1,17 @@
 README.md
+install.sh
+.devcontainer/
+
+{{ if ne .chezmoi.os "darwin" }}
+.macos
+Library/
+private_Library/
+{{ end }}
+
+{{ if ne .chezmoi.os "linux" }}
+.config/Code/
+{{ end }}
+
+{{ if ne .chezmoi.os "windows" }}
+AppData/
+{{ end }}

@@ -1,0 +1,57 @@
+name: Test dotfiles setup
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  test-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Chezmoi
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Initialize and apply Chezmoi
+        run: |
+          # Use non-interactive mode and dummy data
+          chezmoi init --source $PWD
+          chezmoi apply --force
+
+  test-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Chezmoi
+        run: brew install chezmoi
+
+      - name: Initialize and apply Chezmoi
+        run: |
+          chezmoi init --source $PWD
+          chezmoi apply --force
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Chezmoi
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/twpayne/chezmoi/releases/download/v2.47.3/chezmoi_2.47.3_windows_amd64.exe" -OutFile "$env:TEMP\chezmoi.exe"
+          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin"
+          Move-Item -Path "$env:TEMP\chezmoi.exe" -Destination "$env:USERPROFILE\bin\chezmoi.exe"
+          echo "$env:USERPROFILE\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Initialize and apply Chezmoi
+        run: |
+          chezmoi init --source $PWD
+          chezmoi apply --force

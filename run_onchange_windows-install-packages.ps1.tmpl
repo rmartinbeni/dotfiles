@@ -1,0 +1,22 @@
+$ErrorActionPreference = "Stop"
+
+Write-Host "🪟 Installing Windows packages via winget..."
+
+$Packages = @(
+    "fzf",
+    "GNU.Nano",
+    "Docker.DockerDesktop",
+    "BurntSushi.ripgrep.MSVC",
+    "sharkdp.bat",
+    "eza-community.eza",
+    "ajeetdsouza.zoxide",
+    "jqlang.jq",
+    "Microsoft.VisualStudioCode"
+)
+
+foreach ($pkg in $Packages) {
+    Write-Host "Installing $pkg..."
+    winget install --id "$pkg" --accept-source-agreements --accept-package-agreements --silent
+}
+
+Write-Host "✅ Windows packages installed!"
