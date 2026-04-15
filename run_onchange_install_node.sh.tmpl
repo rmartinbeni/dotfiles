@@ -1,4 +1,3 @@
-{{- if ne .chezmoi.os "windows" -}}
 #!/bin/bash
 set -e
 
@@ -21,4 +20,3 @@ nvm alias default node
 echo "📦 Installing global npm packages..."
 npm install -g @google/genai eslint prettier typescript
 echo "✅ Node and global packages installed!"
-{{- end -}}

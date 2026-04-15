@@ -1,4 +1,3 @@
-{{- if ne .chezmoi.os "windows" -}}
 #!/bin/bash
 set -euo pipefail
 
@@ -16,4 +15,3 @@ fi
 # Ensure NVM can be loaded directly for the subsequent node install script
 export NVM_DIR="$NVM_DIR"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-{{- end -}}

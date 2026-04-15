@@ -42,24 +42,3 @@ jobs:
           cp -r .* ~/.local/share/chezmoi/ 2>/dev/null || true
           chezmoi init
           chezmoi apply --force
-
-  test-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Chezmoi
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/twpayne/chezmoi/releases/download/v2.47.3/chezmoi_2.47.3_windows_amd64.exe" -OutFile "$env:TEMP\chezmoi.exe"
-          New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\bin"
-          Move-Item -Path "$env:TEMP\chezmoi.exe" -Destination "$env:USERPROFILE\bin\chezmoi.exe"
-          echo "$env:USERPROFILE\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
-
-      - name: Initialize and apply Chezmoi
-        run: |
-          mkdir -p "$env:USERPROFILE\.local\share\chezmoi"
-          Copy-Item -Path ".\*" -Destination "$env:USERPROFILE\.local\share\chezmoi\" -Recurse -Force
-          Copy-Item -Path ".\.*" -Destination "$env:USERPROFILE\.local\share\chezmoi\" -Recurse -Force -ErrorAction SilentlyContinue
-          chezmoi init
-          chezmoi apply --force

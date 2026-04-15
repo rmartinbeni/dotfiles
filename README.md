@@ -5,7 +5,6 @@ A highly flexible, OS-agnostic dotfiles configuration tailored for agentic devel
 ## Supported OS
 - macOS (uses `brew`)
 - Linux (uses `apt`)
-- Windows (uses `winget`)
 - GitHub Codespaces
 
 ## Requirements
