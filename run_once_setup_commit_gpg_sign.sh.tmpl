@@ -18,11 +18,29 @@ KEY_ID=$(gpg --list-secret-keys --with-colons "$EMAIL" 2>/dev/null | awk -F: '/^
 if [[ -n "$KEY_ID" ]]; then
   echo "⚠️ A GPG key already exists for $EMAIL. Skipping key generation."
 else
+  # Prompt for passphrase
+  while true; do
+    echo -n "Enter passphrase for new GPG key: "
+    read -rs PASSPHRASE
+    echo
+    if [[ -z "$PASSPHRASE" ]]; then
+      echo "❌ Passphrase cannot be empty. Please try again."
+      continue
+    fi
+    echo -n "Confirm passphrase: "
+    read -rs PASSPHRASE_CONFIRM
+    echo
+    if [[ "$PASSPHRASE" != "$PASSPHRASE_CONFIRM" ]]; then
+      echo "❌ Passphrases do not match. Please try again."
+      continue
+    fi
+    break
+  done
+
   tmp=$(mktemp)
   trap 'rm -f "$tmp"' EXIT
 
   cat >"$tmp" <<EOF
-%no-protection
 Key-Type: eddsa
 Key-Curve: ed25519
 Subkey-Type: ecdh
@@ -30,6 +48,7 @@ Subkey-Curve: cv25519
 Name-Real: $NAME
 Name-Email: $EMAIL
 Expire-Date: $EXPIRE_DATE
+Passphrase: $PASSPHRASE
 %commit
 EOF
 
