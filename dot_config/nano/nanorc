@@ -1,0 +1,9 @@
+set autoindent
+set constantshow
+set linenumbers
+set mouse
+set smooth
+set tabsize 4
+set tabstospaces
+set smarthome
+set trimblanks

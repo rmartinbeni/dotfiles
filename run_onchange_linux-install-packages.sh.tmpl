@@ -1,0 +1,44 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "🐧 Installing Linux packages..."
+
+PACKAGES=(
+  fzf
+  nano
+  ripgrep
+  bat
+  zoxide
+  jq
+)
+
+# Update apt
+sudo apt-get update -y
+
+for pkg in "${PACKAGES[@]}"; do
+  if ! dpkg -l | grep -q "^ii  $pkg "; then
+    echo "Installing $pkg..."
+    sudo apt-get install -y "$pkg"
+  else
+    echo "✅ $pkg is already installed."
+  fi
+done
+
+# Docker (requires special setup, so we just prompt or do a basic apt install if possible)
+# Note: In Codespaces docker is already installed.
+if ! command -v docker >/dev/null; then
+  echo "Installing docker..."
+  sudo apt-get install -y docker.io docker-compose
+fi
+
+# eza is usually installed via custom apt repo or cargo, but it's available in recent Ubuntu
+# Let's try apt, fallback to checking if it's there
+if ! command -v eza >/dev/null; then
+  if apt-cache search eza | grep -q "^eza -"; then
+     sudo apt-get install -y eza
+  else
+     echo "⚠️ eza not found in apt. Please install manually if needed, or consider using cargo."
+  fi
+fi
+
+echo "✅ Linux packages installed!"

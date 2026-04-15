@@ -1,7 +1,18 @@
+{{- $interactive := stdinIsATTY -}}
+
 [data]
+{{- if $interactive }}
   git_name = "{{ promptStringOnce . "git_name" "Git user name" "rmartinbeni" }}"
   git_email = "{{ promptStringOnce . "git_email" "Git email address" "32068910+rmartinbeni@users.noreply.github.com"}}"
+{{- else }}
+  git_name = "rmartinbeni"
+  git_email = "32068910+rmartinbeni@users.noreply.github.com"
+{{- end }}
   git_gpgkey = ""
 
 [scriptEnv]
+{{- if $interactive }}
   SETUP_COMMIT_GPG = "{{ promptBoolOnce . "SETUP_COMMIT_GPG" "Enable commit GPG signing (Y/n)" true }}"
+{{- else }}
+  SETUP_COMMIT_GPG = "false"
+{{- end }}

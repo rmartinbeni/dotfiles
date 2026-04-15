@@ -1,0 +1,17 @@
+{
+    "name": "Dotfiles Codespace",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": "latest"
+    },
+    "postCreateCommand": "./install.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "editorconfig.editorconfig"
+            ]
+        }
+    }
+}
