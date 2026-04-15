@@ -29,7 +29,7 @@ done
 # Note: In Codespaces docker is already installed.
 if ! command -v docker >/dev/null; then
   echo "Installing docker..."
-  sudo apt-get install -y docker.io docker-compose
+  sudo apt-get install -y docker.io docker-compose-v2
 fi
 
 # eza is usually installed via custom apt repo or cargo, but it's available in recent Ubuntu
