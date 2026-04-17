@@ -26,6 +26,31 @@ jobs:
           chezmoi init
           chezmoi apply --force
 
+      - name: Verify Nano XDG configuration
+        run: |
+          # Source zshenv to load variables
+          source ~/.zshenv
+
+          # Check if NANORC is set correctly
+          if [ "$NANORC" != "$HOME/.config/nano/nanorc" ]; then
+            echo "Error: NANORC is not set correctly. Got: $NANORC"
+            exit 1
+          fi
+
+          # Check if the nanorc file exists in the correct location
+          if [ ! -f "$NANORC" ]; then
+            echo "Error: nanorc file does not exist at $NANORC"
+            exit 1
+          fi
+
+          # Verify the alias exists in .zshrc
+          if ! grep -Fq 'alias nano="nano --rcfile=\"\$XDG_CONFIG_HOME/nano/nanorc\""' ~/.config/zsh/.zshrc; then
+            echo "Error: nano alias not found in .zshrc"
+            exit 1
+          fi
+
+          echo "✅ Nano XDG configuration verified!"
+
   test-macos:
     runs-on: macos-latest
     steps:
@@ -42,3 +67,28 @@ jobs:
           cp -r .* ~/.local/share/chezmoi/ 2>/dev/null || true
           chezmoi init
           chezmoi apply --force
+
+      - name: Verify Nano XDG configuration
+        run: |
+          # Source zshenv to load variables
+          source ~/.zshenv
+
+          # Check if NANORC is set correctly
+          if [ "$NANORC" != "$HOME/.config/nano/nanorc" ]; then
+            echo "Error: NANORC is not set correctly. Got: $NANORC"
+            exit 1
+          fi
+
+          # Check if the nanorc file exists in the correct location
+          if [ ! -f "$NANORC" ]; then
+            echo "Error: nanorc file does not exist at $NANORC"
+            exit 1
+          fi
+
+          # Verify the alias exists in .zshrc
+          if ! grep -Fq 'alias nano="nano --rcfile=\"\$XDG_CONFIG_HOME/nano/nanorc\""' ~/.config/zsh/.zshrc; then
+            echo "Error: nano alias not found in .zshrc"
+            exit 1
+          fi
+
+          echo "✅ Nano XDG configuration verified!"

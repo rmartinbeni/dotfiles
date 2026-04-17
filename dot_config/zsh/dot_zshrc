@@ -24,6 +24,9 @@ fi
 source ${zsh_plugins}.zsh
 
 # === Aliases ===
+# Nano (use XDG config)
+alias nano="nano --rcfile=\"\$XDG_CONFIG_HOME/nano/nanorc\""
+
 # Eza (better ls)
 if command -v eza &> /dev/null; then
   alias ls="eza --icons --group-directories-first"
