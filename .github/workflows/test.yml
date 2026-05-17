@@ -26,6 +26,11 @@ jobs:
           chezmoi init
           chezmoi apply --force
 
+      - name: Run shell tests
+        run: |
+          chmod +x tests/*.sh
+          for test_script in tests/*.sh; do $test_script; done
+
   test-macos:
     runs-on: macos-latest
     steps:
@@ -42,3 +47,8 @@ jobs:
           cp -r .* ~/.local/share/chezmoi/ 2>/dev/null || true
           chezmoi init
           chezmoi apply --force
+
+      - name: Run shell tests
+        run: |
+          chmod +x tests/*.sh
+          for test_script in tests/*.sh; do $test_script; done
